@@ -6,7 +6,7 @@ import os
 import logging
 import uuid
 from typing import Optional, Dict, Any
-from langfuse.callback import CallbackHandler
+from langfuse.langchain import CallbackHandler
 
 logger = logging.getLogger(__name__)
 

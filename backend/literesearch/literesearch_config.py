@@ -6,7 +6,7 @@ from typing import Optional
 # Initialize Langfuse
 import langfuse
 
-# 导入常量
+# Import constants
 from backend.literesearch.constants import (
     DEFAULT_SIMILARITY_THRESHOLD,
     DEFAULT_FAST_TOKEN_LIMIT,
@@ -33,14 +33,14 @@ from backend.literesearch.constants import (
 
 
 class Config:
-    """Lite Research 配置类"""
+    """Lite Research configuration class"""
 
     def __init__(self, config_file: Optional[str] = None):
         """
-        初始化配置
+        Initialize configuration
 
-        :param config_file: 可选的配置文件路径
-        :raises EnvironmentError: 如果必要的环境变量未设置
+        :param config_file: Optional configuration file path
+        :raises EnvironmentError: If required environment variables are not set
         """
 
         self.retriever = os.getenv("RETRIEVER", DEFAULT_RETRIEVER)
@@ -68,7 +68,7 @@ class Config:
         self.doc_path = os.getenv("DOC_PATH", "")
         self.llm_kwargs = {}
         
-        # 常量定义
+        # Constants definition
         self.DEFAULT_CONCURRENCY_LIMIT = DEFAULT_CONCURRENCY_LIMIT
         self.MIN_CONTENT_LENGTH = MIN_CONTENT_LENGTH
         self.DEFAULT_TIMEOUT = DEFAULT_TIMEOUT
@@ -77,16 +77,16 @@ class Config:
         if self.doc_path:
             self.validate_doc_path()
             
-        # 初始化langfuse
+        # Initialize langfuse
         self._init_langfuse()
 
     def validate_doc_path(self):
-        """验证并创建文档路径"""
+        """Validate and create document path"""
         os.makedirs(self.doc_path, exist_ok=True)
 
     def _init_langfuse(self):
         """
-        初始化 Langfuse 配置
+        Initialize Langfuse configuration
         """
         try:
             langfuse_secret_key = os.getenv("LANGFUSE_SECRET_KEY")

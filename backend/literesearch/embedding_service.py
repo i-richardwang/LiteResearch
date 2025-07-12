@@ -6,18 +6,18 @@ from utils.llm_tools import CustomEmbeddings
 
 
 class Memory:
-    """内存类，用于管理和获取嵌入模型"""
+    """Memory class for managing and retrieving embedding models"""
 
     def __init__(
         self, embedding_provider: str, headers: Optional[dict] = None, **kwargs
     ):
         """
-        初始化内存类
+        Initialize Memory class
 
-        :param embedding_provider: 嵌入提供者的名称
-        :param headers: 可选的HTTP头部信息
-        :param kwargs: 其他可选参数
-        :raises ValueError: 当嵌入提供者不支持时抛出
+        :param embedding_provider: Name of the embedding provider
+        :param headers: Optional HTTP headers
+        :param kwargs: Other optional parameters
+        :raises ValueError: Raised when embedding provider is not supported
         """
         self._embeddings = None
         headers = headers or {}
@@ -29,12 +29,12 @@ class Memory:
                 model=os.getenv("EMBEDDING_MODEL", ""),
             )
         else:
-            raise ValueError("不支持的嵌入提供者。")
+            raise ValueError("Unsupported embedding provider.")
 
     def get_embeddings(self) -> Embeddings:
         """
-        获取嵌入模型
+        Get embedding model
 
-        :return: 嵌入模型实例
+        :return: Embedding model instance
         """
         return self._embeddings

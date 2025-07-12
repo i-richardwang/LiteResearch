@@ -4,7 +4,7 @@ from enum import Enum
 
 
 class ReportType(Enum):
-    """报告类型枚举"""
+    """Report type enumeration"""
 
     ResearchReport = "research_report"
     ResourceReport = "resource_report"
@@ -15,7 +15,7 @@ class ReportType(Enum):
 
 
 class ReportSource(Enum):
-    """报告来源枚举"""
+    """Report source enumeration"""
 
     Web = "web"
     Local = "local"
@@ -23,7 +23,7 @@ class ReportSource(Enum):
 
 
 class Tone(Enum):
-    """报告语气枚举"""
+    """Report tone enumeration"""
 
     Objective = "客观（公正且不带偏见地呈现事实和发现）"
     Formal = "正式（遵循学术标准，使用严谨的语言和结构）"

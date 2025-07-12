@@ -1,171 +1,173 @@
 # 🔍 Lite Research
 
-基于大语言模型的智能研究工具，旨在协助用户进行深入的主题研究和报告生成。
+[中文版本](README_zh.md) | English
 
-## 📖 项目背景
+An AI-powered research tool built with large language models to assist users in conducting in-depth topic research and report generation.
 
-本项目基于 [gpt-researcher](https://github.com/assafelovic/gpt-researcher) 项目进行学习和实践。在研究其架构和实现逻辑的过程中，开发了这个简化版本。
+## 📖 Project Background
 
-Lite Research 保留了原项目的核心思想——通过AI代理进行智能化信息检索和报告生成，但在实现上进行了简化，去除了一些复杂的功能模块，使代码结构更加清晰易懂。
+This project is based on learning and practicing with the [gpt-researcher](https://github.com/assafelovic/gpt-researcher) project. During the study of its architecture and implementation logic, this simplified version was developed.
 
-开发这个项目的主要目的是学习和实践AI驱动研究工具的架构设计，通过实际编码来深入理解此类系统的工作原理。
+Lite Research retains the core concept of the original project—intelligent information retrieval and report generation through AI agents—but simplifies the implementation by removing some complex functional modules, making the code structure clearer and more comprehensible.
 
-## ✨ 功能特色
+The main purpose of developing this project is to learn and practice the architectural design of AI-driven research tools, gaining deep understanding of how such systems work through actual coding.
 
-- **🎯 智能代理选择**：根据研究主题自动选择合适的AI代理角色
-- **🔍 子查询生成**：自动生成多个相关子查询，全面覆盖研究范围
-- **⚡ 并行信息检索**：同时处理多个查询，高效获取网络信息
-- **🧠 上下文压缩**：使用向量化技术提取最相关内容
-- **📄 报告生成**：生成结构化的研究报告，支持多种类型和语气
-- **📊 LLM监控**：集成 Langfuse 监控所有AI调用，提供详细的性能分析和成本追踪
+## ✨ Key Features
 
-## 🚀 快速开始
+- **🎯 Intelligent Agent Selection**: Automatically selects appropriate AI agent roles based on research topics
+- **🔍 Sub-query Generation**: Automatically generates multiple related sub-queries for comprehensive research coverage
+- **⚡ Parallel Information Retrieval**: Processes multiple queries simultaneously for efficient web information gathering
+- **🧠 Context Compression**: Uses vectorization techniques to extract the most relevant content
+- **📄 Report Generation**: Generates structured research reports with support for multiple types and tones
+- **📊 LLM Monitoring**: Integrates Langfuse to monitor all AI calls, providing detailed performance analysis and cost tracking
 
-### 环境要求
+## 🚀 Quick Start
+
+### Requirements
 
 - Python 3.12+
-- UV（Python 包管理工具）
-- 依赖包（通过 `pyproject.toml` 管理）
+- UV (Python package management tool)
+- Dependencies (managed via `pyproject.toml`)
 
-### 安装步骤
+### Installation Steps
 
-1. **克隆项目**
+1. **Clone the repository**
    ```bash
    git clone https://github.com/i-richardwang/literesearch.git
    cd literesearch
    ```
 
-2. **安装依赖**
+2. **Install dependencies**
    ```bash
    uv sync
    ```
 
-3. **配置环境变量**
+3. **Configure environment variables**
    ```bash
-   # 复制环境变量模板
-   cp .env.example .env
+   # Copy environment template
+   cp env.example .env
    
-   # 编辑 .env 文件，添加必要的API密钥
+   # Edit .env file and add necessary API keys
    ```
 
-   **必要配置**：
+   **Required Configuration**:
    ```bash
-   # LLM 配置
+   # LLM Configuration
    OPENAI_API_KEY_DEEPSEEK=your_deepseek_api_key_here
    OPENAI_API_BASE_DEEPSEEK=https://api.deepseek.com/v1
    
-   # 搜索配置
+   # Search Configuration
    TAVILY_API_KEY=your_tavily_api_key_here
    
-   # 嵌入模型配置
+   # Embedding Model Configuration
    EMBEDDING_API_KEY=your_embedding_api_key_here
    EMBEDDING_API_BASE=https://api.example.com/v1/embeddings
    ```
 
-   **可选配置 - Langfuse 监控**：
+   **Optional Configuration - Langfuse Monitoring**:
    ```bash
-   # Langfuse 监控 (可选)
+   # Langfuse Monitoring (Optional)
    LANGFUSE_SECRET_KEY=your_langfuse_secret_key_here
    LANGFUSE_PUBLIC_KEY=your_langfuse_public_key_here
-   LANGFUSE_HOST=https://cloud.langfuse.com  # 可选，默认为云端版本
+   LANGFUSE_HOST=https://cloud.langfuse.com  # Optional, defaults to cloud version
    ```
 
-4. **启动应用**
+4. **Start the application**
    ```bash
    uv run run_app.py
    ```
    
-   或直接使用 streamlit：
+   Or directly with Streamlit:
    ```bash
    uv run streamlit run frontend/literesearch_app.py
    ```
 
-### 使用方法
+### How to Use
 
-1. 在浏览器中打开 `http://localhost:8501`
-2. 在输入框中输入您的研究主题
-3. 选择报告类型和语气
-4. 调整高级设置（可选）
-5. 点击"开始研究"按钮
-6. 等待AI生成研究报告
-7. 下载Markdown格式的报告
+1. Open `http://localhost:8501` in your browser
+2. Enter your research topic in the input field
+3. Select report type and tone
+4. Adjust advanced settings (optional)
+5. Click the "Start Research" button
+6. Wait for AI to generate the research report
+7. Download the report in Markdown format
 
-## 📊 LLM 监控 (可选)
+## 📊 LLM Monitoring (Optional)
 
-本项目集成了 Langfuse 来监控 LLM 调用。如需启用监控功能，请配置以下环境变量：
+This project integrates Langfuse to monitor LLM calls. To enable monitoring functionality, configure the following environment variables:
 
 ```bash
-# Langfuse 监控 (可选)
+# Langfuse Monitoring (Optional)
 LANGFUSE_SECRET_KEY=your_langfuse_secret_key_here
 LANGFUSE_PUBLIC_KEY=your_langfuse_public_key_here
-LANGFUSE_HOST=https://cloud.langfuse.com  # 可选，默认为云端版本
+LANGFUSE_HOST=https://cloud.langfuse.com  # Optional, defaults to cloud version
 ```
 
-获取 API 密钥：访问 [Langfuse Cloud](https://cloud.langfuse.com) 创建项目并获取密钥。
+Get API keys: Visit [Langfuse Cloud](https://cloud.langfuse.com) to create a project and obtain keys.
 
-**注意**：监控功能完全可选，不影响核心研究功能的使用。
+**Note**: Monitoring functionality is completely optional and does not affect core research functionality.
 
-## 📊 报告类型
+## 📊 Report Types
 
-- **📊 综合研究报告**：全面分析和总结
-- **📚 资源汇总报告**：相关资料和参考文献列表
-- **📝 研究大纲**：主要观点和结构框架
-- **📋 详细深度报告**：全面且深入的分析
-- **⚙️ 自定义报告**：根据特定需求定制
-- **🔬 子主题报告**：特定子话题的深入分析
+- **📊 Comprehensive Research Report**: Complete analysis and summary
+- **📚 Resource Summary Report**: Related materials and reference list
+- **📝 Research Outline**: Main points and structural framework
+- **📋 Detailed In-depth Report**: Comprehensive and thorough analysis
+- **⚙️ Custom Report**: Customized according to specific requirements
+- **🔬 Sub-topic Report**: In-depth analysis of specific sub-topics
 
-## 🎨 语气选择
+## 🎨 Tone Options
 
-- **正式**：学术和商业报告风格
-- **非正式**：轻松易读的风格
-- **分析性**：深度分析导向
-- **说服性**：具有说服力的表达
-- **信息性**：客观信息传递
-- **解释性**：详细解释和说明
+- **Formal**: Academic and business report style
+- **Informal**: Easy-to-read and relaxed style
+- **Analytical**: Deep analysis oriented
+- **Persuasive**: Convincing expression
+- **Informative**: Objective information delivery
+- **Explanatory**: Detailed explanation and illustration
 
-## ⚙️ 高级设置
+## ⚙️ Advanced Settings
 
-- **最大子查询数量**：控制研究的广度（1-10）
-- **最大子主题数**：控制详细报告的深度（1-10）
-- **每查询最大结果数**：控制信息量（1-20）
+- **Maximum Sub-queries**: Controls research breadth (1-10)
+- **Maximum Sub-topics**: Controls detailed report depth (1-10)
+- **Maximum Results per Query**: Controls information volume (1-20)
 
-## 🔄 后端执行逻辑
+## 🔄 Backend Execution Logic
 
 ```mermaid
 graph TD
-    A[用户输入研究主题] --> B[选择专业AI代理]
-    B --> C[生成研究子查询]
-    C --> D[并行处理多个子查询]
+    A[User Input Research Topic] --> B[Select Professional AI Agent]
+    B --> C[Generate Research Sub-queries]
+    C --> D[Parallel Processing Multiple Sub-queries]
     
-    %% 子查询并行处理
-    D --> E1[子查询1<br/>网络搜索]
-    D --> E2[子查询2<br/>网络搜索]
-    D --> E3[子查询3<br/>网络搜索]
-    D --> EN[子查询N<br/>网络搜索]
+    %% Sub-query parallel processing
+    D --> E1[Sub-query 1<br/>Web Search]
+    D --> E2[Sub-query 2<br/>Web Search]
+    D --> E3[Sub-query 3<br/>Web Search]
+    D --> EN[Sub-query N<br/>Web Search]
     
-    E1 --> F1[内容抓取<br/>与压缩]
-    E2 --> F2[内容抓取<br/>与压缩]
-    E3 --> F3[内容抓取<br/>与压缩]
-    EN --> FN[内容抓取<br/>与压缩]
+    E1 --> F1[Content Extraction<br/>& Compression]
+    E2 --> F2[Content Extraction<br/>& Compression]
+    E3 --> F3[Content Extraction<br/>& Compression]
+    EN --> FN[Content Extraction<br/>& Compression]
     
-    F1 --> G[汇总所有上下文]
+    F1 --> G[Aggregate All Context]
     F2 --> G
     F3 --> G
     FN --> G
     
-    G --> H{报告类型判断}
-    H -->|详细报告| I[构建研究主题]
-    H -->|其他类型| J[直接生成报告]
+    G --> H{Report Type Decision}
+    H -->|Detailed Report| I[Build Research Topics]
+    H -->|Other Types| J[Direct Report Generation]
     
-    I --> K[生成报告引言]
-    K --> L[逐个生成主题报告]
-    L --> M[组装完整报告]
+    I --> K[Generate Report Introduction]
+    K --> L[Generate Topic Reports One by One]
+    L --> M[Assemble Complete Report]
     
-    J --> N[生成最终报告]
+    J --> N[Generate Final Report]
     M --> N
-    N --> O[返回研究报告]
+    N --> O[Return Research Report]
 
-    %% 样式定义
+    %% Style definitions
     style A fill:#e1f5fe
     style B fill:#f3e5f5
     style C fill:#f3e5f5
@@ -179,76 +181,76 @@ graph TD
     style O fill:#c8e6c9
 ```
 
-### 核心组件说明
+### Core Component Description
 
-- **专业代理选择**: 根据研究主题智能匹配最合适的AI专家角色（如金融分析师、技术专家等）
-- **子查询生成**: 将主题分解为多个相关的搜索问题，确保研究的全面性
-- **并行信息检索**: 同时处理多个子查询，提高研究效率
-- **智能内容处理**: 自动抓取网页内容并使用向量化技术筛选最相关信息
-- **报告生成**: 根据不同报告类型需求，生成结构化的专业研究报告
+- **Professional Agent Selection**: Intelligently matches the most suitable AI expert roles based on research topics (such as financial analysts, technical experts, etc.)
+- **Sub-query Generation**: Breaks down topics into multiple related search questions to ensure comprehensive research
+- **Parallel Information Retrieval**: Processes multiple sub-queries simultaneously to improve research efficiency
+- **Intelligent Content Processing**: Automatically extracts web content and uses vectorization techniques to filter the most relevant information
+- **Report Generation**: Generates structured professional research reports based on different report type requirements
 
-## 🛠️ 技术栈
+## 🛠️ Technology Stack
 
-- **前端**：Streamlit
-- **后端**：Python, LangChain
-- **AI模型**：OpenAI GPT系列
-- **搜索引擎**：Tavily API
-- **向量化**：OpenAI Embeddings
-- **监控**：Langfuse (可选)
+- **Frontend**: Streamlit
+- **Backend**: Python, LangChain
+- **AI Models**: OpenAI GPT series
+- **Search Engine**: Tavily API
+- **Vectorization**: OpenAI Embeddings
+- **Monitoring**: Langfuse (optional)
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 literesearch/
-├── frontend/                 # 前端应用
-│   ├── literesearch_app.py   # 主应用程序（核心功能逻辑）
-│   ├── ui_components.py     # UI组件和样式定义
-│   └── assets/             # 静态资源文件
-├── backend/                 # 后端核心
-│   └── literesearch/        # 文献研究模块
-├── utils/                  # 工具函数
-│   ├── llm_tools.py       # LLM工具类
-│   └── langfuse_tools.py  # Langfuse监控工具
-├── run_app.py             # 启动脚本
-├── pyproject.toml        # 项目配置和依赖包列表
-├── uv.lock              # UV锁定文件
-└── README.md             # 说明文档
+├── frontend/                 # Frontend application
+│   ├── literesearch_app.py   # Main application (core functionality logic)
+│   ├── ui_components.py     # UI components and style definitions
+│   └── assets/             # Static resource files
+├── backend/                 # Backend core
+│   └── literesearch/        # Literature research module
+├── utils/                  # Utility functions
+│   ├── llm_tools.py       # LLM utility classes
+│   └── langfuse_tools.py  # Langfuse monitoring tools
+├── run_app.py             # Launch script
+├── pyproject.toml        # Project configuration and dependency list
+├── uv.lock              # UV lock file
+└── README.md             # Documentation
 ```
 
-### 🏗️ 代码架构
+### 🏗️ Code Architecture
 
-**模块化设计**：
-- `literesearch_app.py`：核心功能逻辑，处理用户交互和AI研究流程
-- `ui_components.py`：UI组件和样式，负责界面展示和用户体验
-- 清晰的职责分离，便于维护和扩展
+**Modular Design**:
+- `literesearch_app.py`: Core functionality logic, handling user interaction and AI research workflow
+- `ui_components.py`: UI components and styling, responsible for interface display and user experience
+- Clear separation of responsibilities for easy maintenance and extension
 
-**核心功能模块**：
-- 研究设置和参数配置
-- AI研究流程控制
-- 报告生成和下载
-- 异常处理和用户反馈
-- LLM调用监控和分析
+**Core Functional Modules**:
+- Research setup and parameter configuration
+- AI research workflow control
+- Report generation and download
+- Exception handling and user feedback
+- LLM call monitoring and analysis
 
-## 🤝 贡献
+## 🤝 Contributing
 
-欢迎提交 Issue 和 Pull Request 来改进项目！
+Welcome to submit Issues and Pull Requests to improve the project!
 
-### 开发指南
+### Development Guide
 
-1. UI相关修改请编辑 `frontend/ui_components.py`
-2. 功能逻辑修改请编辑 `frontend/literesearch_app.py`
-3. 后端AI逻辑位于 `backend/literesearch/`
-4. 监控工具位于 `utils/langfuse_tools.py`
+1. For UI-related modifications, edit `frontend/ui_components.py`
+2. For functionality logic modifications, edit `frontend/literesearch_app.py`
+3. Backend AI logic is located in `backend/literesearch/`
+4. Monitoring tools are located in `utils/langfuse_tools.py`
 
-## 📄 许可证
+## 📄 License
 
-本项目采用 MIT 许可证。
+This project is licensed under the MIT License.
 
-## 📞 联系方式
+## 📞 Contact
 
-- 作者：Richard Wang
-- GitHub：https://github.com/i-richardwang/literesearch
+- Author: Richard Wang
+- GitHub: https://github.com/i-richardwang/literesearch
 
 ---
 
-**提示**：首次运行需要配置相应的API密钥，请确保 `.env` 文件中包含必要的配置信息。Langfuse 监控是可选功能，不影响核心研究功能的使用。
+**Tip**: First-time setup requires configuring the corresponding API keys. Please ensure that the `.env` file contains necessary configuration information. Langfuse monitoring is an optional feature and does not affect the use of core research functionality.

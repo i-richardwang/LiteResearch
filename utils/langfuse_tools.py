@@ -1,5 +1,5 @@
 """
-Langfuse工具类，提供统一的监控配置和管理
+Langfuse tools class, providing unified monitoring configuration and management
 """
 
 import os
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class LangfuseManager:
     """
-    Langfuse监控管理器，用于统一管理LLM调用的监控
+    Langfuse monitoring manager for unified management of LLM call monitoring
     """
     
     _instance = None
@@ -31,34 +31,34 @@ class LangfuseManager:
     
     def _check_langfuse_config(self) -> bool:
         """
-        检查langfuse配置是否可用
+        Check if langfuse configuration is available
         
         Returns:
-            bool: 如果配置完整则返回True，否则返回False
+            bool: Returns True if configuration is complete, otherwise False
         """
         langfuse_secret_key = os.getenv("LANGFUSE_SECRET_KEY")
         langfuse_public_key = os.getenv("LANGFUSE_PUBLIC_KEY")
         
         if langfuse_secret_key and langfuse_public_key:
-            logger.info("✅ Langfuse配置检测成功")
+            logger.info("✅ Langfuse configuration detected successfully")
             return True
         else:
-            logger.warning("⚠️  Langfuse配置未完整设置，监控功能将被禁用")
+            logger.warning("⚠️  Langfuse configuration not fully set up, monitoring will be disabled")
             return False
     
     def get_callback_handler(self, trace_name: Optional[str] = None, 
                            metadata: Optional[Dict[str, Any]] = None,
                            session_id: Optional[str] = None) -> Optional[CallbackHandler]:
         """
-        获取langfuse回调处理器
+        Get langfuse callback handler
         
         Args:
-            trace_name: 可选的追踪名称
-            metadata: 可选的元数据
-            session_id: 可选的会话ID
+            trace_name: Optional trace name
+            metadata: Optional metadata
+            session_id: Optional session ID
             
         Returns:
-            CallbackHandler或None: 如果langfuse可用则返回回调处理器，否则返回None
+            CallbackHandler or None: Returns callback handler if langfuse is available, otherwise None
         """
         if not self._enabled:
             return None
@@ -73,7 +73,7 @@ class LangfuseManager:
                 handler.session_id = session_id
             return handler
         except Exception as e:
-            logger.error(f"❌ 创建Langfuse回调处理器失败: {e}")
+            logger.error(f"❌ Failed to create Langfuse callback handler: {e}")
             return None
     
     def get_config_with_callbacks(self, trace_name: Optional[str] = None,
@@ -81,16 +81,16 @@ class LangfuseManager:
                                  existing_config: Optional[Dict[str, Any]] = None,
                                  session_id: Optional[str] = None) -> Dict[str, Any]:
         """
-        获取包含langfuse回调的配置字典
+        Get configuration dictionary containing langfuse callbacks
         
         Args:
-            trace_name: 可选的追踪名称
-            metadata: 可选的元数据
-            existing_config: 现有的配置字典
-            session_id: 可选的会话ID
+            trace_name: Optional trace name
+            metadata: Optional metadata
+            existing_config: Existing configuration dictionary
+            session_id: Optional session ID
             
         Returns:
-            Dict[str, Any]: 包含callbacks的配置字典
+            Dict[str, Any]: Configuration dictionary containing callbacks
         """
         config = existing_config.copy() if existing_config else {}
         
@@ -105,15 +105,15 @@ class LangfuseManager:
     @property
     def is_enabled(self) -> bool:
         """
-        检查langfuse是否启用
+        Check if langfuse is enabled
         
         Returns:
-            bool: 如果启用则返回True
+            bool: Returns True if enabled
         """
         return self._enabled
 
 
-# 创建全局实例
+# Create global instance
 langfuse_manager = LangfuseManager()
 
 
@@ -122,18 +122,18 @@ def get_langfuse_config(trace_name: Optional[str] = None,
                        existing_config: Optional[Dict[str, Any]] = None,
                        session_id: Optional[str] = None) -> Dict[str, Any]:
     """
-    便利函数：获取包含langfuse回调的配置
+    Convenience function: Get configuration containing langfuse callbacks
     
     Args:
-        trace_name: 可选的追踪名称
-        metadata: 可选的元数据
-        existing_config: 现有的配置字典
-        session_id: 可选的会话ID
+        trace_name: Optional trace name
+        metadata: Optional metadata
+        existing_config: Existing configuration dictionary
+        session_id: Optional session ID
         
     Returns:
-        Dict[str, Any]: 包含callbacks的配置字典
+        Dict[str, Any]: Configuration dictionary containing callbacks
     """
-    # 添加应用标识到metadata
+    # Add application identifier to metadata
     enhanced_metadata = {"application": "LiteResearch"}
     if metadata:
         enhanced_metadata.update(metadata)
@@ -145,17 +145,17 @@ def get_langfuse_handler(trace_name: Optional[str] = None,
                         metadata: Optional[Dict[str, Any]] = None,
                         session_id: Optional[str] = None) -> Optional[CallbackHandler]:
     """
-    便利函数：获取langfuse回调处理器
+    Convenience function: Get langfuse callback handler
     
     Args:
-        trace_name: 可选的追踪名称
-        metadata: 可选的元数据
-        session_id: 可选的会话ID
+        trace_name: Optional trace name
+        metadata: Optional metadata
+        session_id: Optional session ID
         
     Returns:
-        CallbackHandler或None: 回调处理器
+        CallbackHandler or None: Callback handler
     """
-    # 添加应用标识到metadata
+    # Add application identifier to metadata
     enhanced_metadata = {"application": "LiteResearch"}
     if metadata:
         enhanced_metadata.update(metadata)
@@ -165,9 +165,9 @@ def get_langfuse_handler(trace_name: Optional[str] = None,
 
 def generate_session_id() -> str:
     """
-    生成一个新的会话ID
+    Generate a new session ID
     
     Returns:
-        str: 唯一的会话ID (UUID格式)
+        str: Unique session ID (UUID format)
     """
     return str(uuid.uuid4()) 

@@ -23,7 +23,7 @@ from utils.langfuse_tools import generate_session_id
 
 
 class LiteResearcher:
-    """Lite Research 类"""
+    """Lite Research class"""
 
     def __init__(
         self,
@@ -42,25 +42,25 @@ class LiteResearcher:
         max_search_results_per_query: Optional[int] = None,
     ):
         """
-        初始化 Lite Research
+        Initialize Lite Research
 
-        :param query: 研究查询
-        :param report_type: 报告类型
-        :param report_source: 报告来源
-        :param tone: 报告语气
-        :param config_path: 配置文件路径（可选）
-        :param websocket: WebSocket 对象（可选）
-        :param agent: 指定的代理（可选）
-        :param role: 指定的角色（可选）
-        :param verbose: 是否详细输出
-        :param verbose_callback: 详细输出回调函数（可选）
-        :param max_iterations: 最大迭代次数（可选）
-        :param max_subtopics: 最大子主题数（可选）
-        :param max_search_results_per_query: 每个查询的最大搜索结果数（可选）
+        :param query: Research query
+        :param report_type: Report type
+        :param report_source: Report source
+        :param tone: Report tone
+        :param config_path: Configuration file path (optional)
+        :param websocket: WebSocket object (optional)
+        :param agent: Specified agent (optional)
+        :param role: Specified role (optional)
+        :param verbose: Whether to output verbosely
+        :param verbose_callback: Verbose output callback function (optional)
+        :param max_iterations: Maximum number of iterations (optional)
+        :param max_subtopics: Maximum number of subtopics (optional)
+        :param max_search_results_per_query: Maximum search results per query (optional)
         """
-        # 输入验证
+        # Input validation
         if not query or not query.strip():
-            raise ValueError("查询内容不能为空")
+            raise ValueError("Query content cannot be empty")
         
         self.query = query.strip()
         self.report_type = report_type
@@ -75,10 +75,10 @@ class LiteResearcher:
         self.context: List[str] = []
         self.memory = Memory(self.cfg.embedding_provider)
         
-        # 生成唯一的session ID用于组织整个研究流程
+        # Generate unique session ID for organizing the entire research workflow
         self.session_id = generate_session_id()
 
-        # 更新配置
+        # Update configuration
         if max_iterations is not None:
             self.cfg.max_iterations = max_iterations
         if max_subtopics is not None:
@@ -88,9 +88,9 @@ class LiteResearcher:
 
     def log(self, message: str) -> None:
         """
-        记录日志信息
+        Log information
 
-        :param message: 要记录的消息
+        :param message: Message to log
         """
         if self.verbose:
             print(message)
@@ -99,59 +99,59 @@ class LiteResearcher:
 
     async def process_sub_query(self, sub_query: str, index: int, total: int) -> str:
         """
-        处理子查询
+        Process sub-query
 
-        :param sub_query: 子查询
-        :param index: 当前子查询索引
-        :param total: 总子查询数
-        :return: 压缩后的上下文
+        :param sub_query: Sub-query
+        :param index: Current sub-query index
+        :param total: Total number of sub-queries
+        :return: Compressed context
         """
-        self.log(f"正在处理子查询 {index}/{total}: {sub_query}")
+        self.log(f"Processing sub-query {index}/{total}: {sub_query}")
 
         retriever_class = get_retriever(self.cfg.retriever) or get_default_retriever()
         retriever = retriever_class(sub_query)
-        self.log(f"使用检索器: {retriever.__class__.__name__}")
+        self.log(f"Using retriever: {retriever.__class__.__name__}")
 
         search_results = retriever.search(
             max_results=self.cfg.max_search_results_per_query
         )
 
         urls = [result["href"] for result in search_results]
-        self.log(f"正在为子查询抓取 {len(urls)} 个URL...")
+        self.log(f"Scraping {len(urls)} URLs for sub-query...")
 
         scraped_content = scrape_urls(urls, self.cfg)
 
         context_compressor = ContextCompressor(
             scraped_content, self.memory.get_embeddings()
         )
-        self.log(f"正在为子查询压缩上下文...")
+        self.log(f"Compressing context for sub-query...")
 
         compressed_context = await context_compressor.get_context(sub_query)
-        self.log(f"子查询 {index}/{total} 的上下文压缩完成。")
+        self.log(f"Context compression completed for sub-query {index}/{total}.")
 
         return compressed_context
 
     async def conduct_research(self) -> List[str]:
         """
-        执行研究任务
+        Conduct research task
 
-        :return: 研究上下文列表
+        :return: List of research contexts
         """
-        self.log(f"🔎 开始 '{self.query}' 的研究任务...")
-        self.log(f"🎯 研究会话ID: {self.session_id}")
+        self.log(f"🔎 Starting research task for '{self.query}'...")
+        self.log(f"🎯 Research session ID: {self.session_id}")
 
         if not (self.agent and self.role):
             self.agent, self.role = await choose_agent(self.query, self.cfg, session_id=self.session_id)
-        self.log(f"选择的代理: {self.agent}")
+        self.log(f"Selected agent: {self.agent}")
 
         sub_queries = await get_sub_queries(
             self.query, self.role, self.cfg, None, self.report_type, session_id=self.session_id
         )
-        self.log(f"生成的子查询: {sub_queries}")
+        self.log(f"Generated sub-queries: {sub_queries}")
 
-        self.log(f"开始为 {len(sub_queries)} 个子查询进行搜索和抓取...")
+        self.log(f"Starting search and scraping for {len(sub_queries)} sub-queries...")
 
-        # 使用配置中的并发限制常量
+        # Use concurrency limit constant from configuration
         semaphore = asyncio.Semaphore(self.cfg.DEFAULT_CONCURRENCY_LIMIT)
 
         async def limited_process_sub_query(*args):
@@ -164,38 +164,38 @@ class LiteResearcher:
         ]
         self.context = await asyncio.gather(*tasks)
 
-        self.log(f"研究阶段完成。共收集上下文数量: {len(self.context)}")
+        self.log(f"Research phase completed. Total contexts collected: {len(self.context)}")
 
         return self.context
 
     async def generate_report(self) -> str:
         """
-        生成研究报告
+        Generate research report
 
-        :return: 生成的报告内容
+        :return: Generated report content
         """
-        self.log("开始生成报告...")
+        self.log("Starting report generation...")
 
         full_context = "\n".join(self.context)
-        self.log(f"合并后的上下文长度: {len(full_context)} 字符")
+        self.log(f"Merged context length: {len(full_context)} characters")
 
         if self.report_type == ReportType.DetailedReport.value:
-            self.log("生成详细报告...")
+            self.log("Generating detailed report...")
 
-            self.log("构建子主题...")
+            self.log("Building subtopics...")
             subtopics = await construct_subtopics(self.query, full_context, self.cfg, session_id=self.session_id)
-            self.log(f"生成了 {len(subtopics)} 个子主题")
+            self.log(f"Generated {len(subtopics)} subtopics")
 
-            self.log("生成报告引言...")
+            self.log("Generating report introduction...")
             introduction = await get_report_introduction(
                 self.query, full_context, self.role, self.cfg, session_id=self.session_id
             )
-            self.log("引言生成成功")
+            self.log("Introduction generated successfully")
 
             subtopic_reports = []
             for i, subtopic in enumerate(subtopics, 1):
                 self.log(
-                    f"正在为子主题 {i}/{len(subtopics)} 生成报告: '{subtopic['task']}'"
+                    f"Generating report for subtopic {i}/{len(subtopics)}: '{subtopic['task']}'"
                 )
                 subtopic_report = await generate_report(
                     subtopic["task"],
@@ -210,12 +210,12 @@ class LiteResearcher:
                     session_id=self.session_id,
                 )
                 subtopic_reports.append(subtopic_report)
-                self.log(f"子主题 {i} 的报告生成成功")
+                self.log(f"Report for subtopic {i} generated successfully")
 
             full_report = f"{introduction}\n\n" + "\n\n".join(subtopic_reports)
-            self.log("详细报告编译完成")
+            self.log("Detailed report compilation completed")
         else:
-            self.log(f"生成 {self.report_type} 报告...")
+            self.log(f"Generating {self.report_type} report...")
             full_report = await generate_report(
                 self.query,
                 full_context,
@@ -226,16 +226,16 @@ class LiteResearcher:
                 self.cfg,
                 session_id=self.session_id,
             )
-            self.log("报告生成完成")
+            self.log("Report generation completed")
 
-        self.log(f"最终报告长度: {len(full_report)} 字符")
+        self.log(f"Final report length: {len(full_report)} characters")
         return full_report
 
     async def run(self) -> str:
         """
-        运行 Lite Research
+        Run Lite Research
 
-        :return: 生成的研究报告
+        :return: Generated research report
         """
         await self.conduct_research()
         report = await self.generate_report()

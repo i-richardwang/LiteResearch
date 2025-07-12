@@ -4,15 +4,15 @@ from dotenv import load_dotenv
 
 def load_env():
     """
-    加载环境变量并设置到 os.environ
+    Load environment variables and set them to os.environ
     """
-    # 获取项目根目录的路径
+    # Get project root directory path
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
-    # 构建 .env 文件的路径
+    # Build .env file path
     dotenv_path = os.path.join(project_root, '.env')
 
-    # 加载 .env 文件
+    # Load .env file
     load_dotenv(dotenv_path)
 
-    print("环境变量已加载")
+    print("Environment variables loaded")

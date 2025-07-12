@@ -31,24 +31,24 @@ from utils.langfuse_tools import get_langfuse_config
 
 
 class AgentResponse(BaseModel):
-    """AI代理响应模型"""
+    """AI agent response model"""
 
     server: str = Field(
-        ..., description="由主题领域确定的服务器类型，与相应的表情符号关联。"
+        ..., description="Server type determined by topic domain, associated with corresponding emoji."
     )
     agent_role_prompt: str = Field(
-        ..., description="基于代理角色和专业知识的特定指令。"
+        ..., description="Specific instructions based on agent role and expertise."
     )
 
 
 class Subtopic(BaseModel):
-    """子主题模型"""
+    """Subtopic model"""
 
-    task: str = Field(description="任务名称", min_length=1)
+    task: str = Field(description="Task name", min_length=1)
 
 
 class Subtopics(BaseModel):
-    """子主题列表模型"""
+    """Subtopics list model"""
 
     subtopics: List[Subtopic] = []
 
@@ -58,12 +58,12 @@ async def choose_agent(
     query: str, cfg: Config, session_id: Optional[str] = None
 ) -> Tuple[str, str]:
     """
-    选择适合查询的AI代理
+    Choose appropriate AI agent for query
 
-    :param query: 查询字符串
-    :param cfg: 配置对象
-    :param session_id: 可选的会话ID
-    :return: 服务器类型和代理角色提示
+    :param query: Query string
+    :param cfg: Configuration object
+    :param session_id: Optional session ID
+    :return: Server type and agent role prompt
     """
     try:
         language_model = init_language_model(temperature=cfg.temperature)
@@ -100,7 +100,7 @@ Important instructions:
 
         chain = prompt_template | chat | parser
 
-        # 使用langfuse工具获取配置
+        # Get configuration using langfuse tools
         config = get_langfuse_config(
             trace_name="choose_agent",
             metadata={"query": query},
@@ -111,10 +111,10 @@ Important instructions:
 
         return agent_dict["server"], agent_dict["agent_role_prompt"]
     except json.JSONDecodeError:
-        print("解析JSON时出错。使用默认代理。")
-        return "默认代理", (
-            "你是一个AI批判性思维研究助手。你的唯一目的是就给定文本撰写结构良好、"
-            "批评性强、客观公正的报告。"
+        print("Error parsing JSON. Using default agent.")
+        return "Default Agent", (
+            "You are an AI critical thinking research assistant. Your sole purpose is to write well-structured, "
+            "critical, and objective reports on given text."
         )
 
 
@@ -127,15 +127,15 @@ async def get_sub_queries(
     session_id: Optional[str] = None
 ) -> List[str]:
     """
-    生成子查询
+    Generate sub-queries
 
-    :param query: 主查询
-    :param agent_role_prompt: 代理角色提示
-    :param cfg: 配置对象
-    :param parent_query: 父查询
-    :param report_type: 报告类型
-    :param session_id: 可选的会话ID
-    :return: 子查询列表
+    :param query: Main query
+    :param agent_role_prompt: Agent role prompt
+    :param cfg: Configuration object
+    :param parent_query: Parent query
+    :param report_type: Report type
+    :param session_id: Optional session ID
+    :return: List of sub-queries
     """
     language_model = init_language_model(temperature=cfg.temperature)
     chat = language_model
@@ -156,7 +156,7 @@ async def get_sub_queries(
 
     messages = prompt.format_messages(question=query)
     
-    # 使用langfuse工具获取配置
+    # Get configuration using langfuse tools
     config = get_langfuse_config(
         trace_name="get_sub_queries",
         metadata={
@@ -174,7 +174,7 @@ async def get_sub_queries(
         sub_queries = json.loads(response.content)
         return sub_queries
     except json.JSONDecodeError:
-        print("解析JSON时出错。返回原始查询。")
+        print("Error parsing JSON. Returning original query.")
         return [query]
 
 
@@ -183,14 +183,14 @@ async def construct_subtopics(
     task: str, data: str, config: Config, subtopics: List[Dict[str, str]] = [], session_id: Optional[str] = None
 ) -> List[Dict[str, str]]:
     """
-    构建子主题
+    Construct subtopics
 
-    :param task: 任务
-    :param data: 研究数据
-    :param config: 配置对象
-    :param subtopics: 现有子主题列表
-    :param session_id: 可选的会话ID
-    :return: 构建的子主题列表
+    :param task: Task
+    :param data: Research data
+    :param config: Configuration object
+    :param subtopics: Existing subtopics list
+    :param session_id: Optional session ID
+    :return: Constructed subtopics list
     """
     try:
         parser = JsonOutputParser(pydantic_object=Subtopics)
@@ -218,7 +218,7 @@ async def construct_subtopics(
 
         chain = prompt | chat | parser
 
-        # 使用langfuse工具获取配置
+        # Get configuration using langfuse tools
         langfuse_config = get_langfuse_config(
             trace_name="construct_subtopics",
             metadata={
@@ -242,7 +242,7 @@ async def construct_subtopics(
         return output["subtopics"]
 
     except Exception as e:
-        print("解析子主题时出现异常：", e)
+        print("Exception occurred while parsing subtopics:", e)
         return subtopics
 
 
@@ -260,20 +260,20 @@ async def generate_report(
     session_id: Optional[str] = None,
 ) -> str:
     """
-    生成报告
+    Generate report
 
-    :param query: 查询
-    :param context: 上下文
-    :param agent_role_prompt: 代理角色提示
-    :param report_type: 报告类型
-    :param tone: 语气
-    :param report_source: 报告来源
-    :param cfg: 配置对象
-    :param websocket: WebSocket对象（可选）
-    :param main_topic: 主题（可选）
-    :param existing_headers: 现有标题列表（可选）
-    :param session_id: 可选的会话ID
-    :return: 生成的报告
+    :param query: Query
+    :param context: Context
+    :param agent_role_prompt: Agent role prompt
+    :param report_type: Report type
+    :param tone: Tone
+    :param report_source: Report source
+    :param cfg: Configuration object
+    :param websocket: WebSocket object (optional)
+    :param main_topic: Main topic (optional)
+    :param existing_headers: Existing headers list (optional)
+    :param session_id: Optional session ID
+    :return: Generated report
     """
     generate_prompt = get_report_by_type(report_type)
 
@@ -306,7 +306,7 @@ async def generate_report(
         {"role": "user", "content": content},
     ]
 
-    # 使用langfuse工具获取配置
+    # Get configuration using langfuse tools
     config = get_langfuse_config(
         trace_name="generate_report",
         metadata={
@@ -333,15 +333,15 @@ async def get_report_introduction(
     session_id: Optional[str] = None,
 ) -> str:
     """
-    获取报告引言
+    Get report introduction
 
-    :param query: 查询
-    :param context: 上下文
-    :param role: 角色
-    :param config: 配置对象
-    :param websocket: WebSocket对象（可选）
-    :param session_id: 可选的会话ID
-    :return: 生成的报告引言
+    :param query: Query
+    :param context: Context
+    :param role: Role
+    :param config: Configuration object
+    :param websocket: WebSocket object (optional)
+    :param session_id: Optional session ID
+    :return: Generated report introduction
     """
     language_model = init_language_model(temperature=config.temperature)
     chat = language_model
@@ -353,7 +353,7 @@ async def get_report_introduction(
         {"role": "user", "content": prompt},
     ]
 
-    # 使用langfuse工具获取配置
+    # Get configuration using langfuse tools
     langfuse_config = get_langfuse_config(
         trace_name="get_report_introduction",
         metadata={
@@ -369,4 +369,4 @@ async def get_report_introduction(
     return response.content
 
 
-# 测试函数已移动到独立的测试文件中
+# Test functions have been moved to separate test files

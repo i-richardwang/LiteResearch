@@ -3,8 +3,8 @@
 import os
 from typing import Optional
 
-# Initialize Langfuse
-import langfuse
+# Initialize Langfuse (v3)
+from langfuse import Langfuse, get_client
 
 # Import constants
 from backend.literesearch.constants import (
@@ -72,11 +72,14 @@ class Config:
             langfuse_host = os.getenv("LANGFUSE_HOST", DEFAULT_LANGFUSE_HOST)
             
             if langfuse_secret_key and langfuse_public_key:
-                langfuse.configure(
-                    secret_key=langfuse_secret_key,
+                # Initialize the Langfuse v3 singleton client
+                Langfuse(
                     public_key=langfuse_public_key,
-                    host=langfuse_host
+                    secret_key=langfuse_secret_key,
+                    host=langfuse_host,
                 )
+                # Touch the client to ensure it is created
+                _ = get_client()
                 print(f"✅ Langfuse initialized successfully with host: {langfuse_host}")
             else:
                 print("⚠️  Langfuse keys not found in environment variables. Monitoring will be disabled.")

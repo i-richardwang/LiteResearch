@@ -1,6 +1,6 @@
 # backend/literesearch/embedding_service.py
-from typing import Optional
-from langchain.embeddings.base import Embeddings
+import os
+from langchain_core.embeddings import Embeddings
 from utils.llm_tools import init_embeddings
 
 
@@ -13,8 +13,9 @@ class Memory:
         
         :param kwargs: Optional parameters (kept for compatibility)
         """
-        # Use the same OPENAI_API_KEY and OPENAI_BASE_URL as the LLM
-        self._embeddings = init_embeddings()
+        # Configure official batch size via OpenAIEmbeddings chunk_size
+        chunk_size = int(os.environ.get("EMBEDDING_MAX_BATCH_SIZE", "64"))
+        self._embeddings = init_embeddings(chunk_size=chunk_size)
 
     def get_embeddings(self) -> Embeddings:
         """

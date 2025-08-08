@@ -138,16 +138,27 @@ def init_embeddings(model_name: Optional[str] = None, **kwargs: Any) -> OpenAIEm
         ValueError: Raised when OPENAI_API_KEY environment variable is missing.
     """
     model_name = model_name or os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
-    
-    # LangChain will automatically read OPENAI_API_KEY and OPENAI_BASE_URL from environment
-    if not os.environ.get("OPENAI_API_KEY"):
+
+    # Prefer dedicated embedding credentials/base when provided
+    embedding_api_key = os.environ.get("EMBEDDING_API_KEY")
+    embedding_api_base = os.environ.get("EMBEDDING_API_BASE") or os.environ.get("EMBEDDING_BASE_URL")
+
+    # If dedicated credentials are not set, fall back to the general OpenAI-style envs
+    api_key = embedding_api_key or os.environ.get("OPENAI_API_KEY")
+    base_url = embedding_api_base or os.environ.get("OPENAI_BASE_URL")
+
+    if not api_key:
         raise ValueError(
-            "OPENAI_API_KEY environment variable is required. Please set it in your environment."
+            "Embedding API key is required. Set EMBEDDING_API_KEY or fallback OPENAI_API_KEY."
         )
 
-    embedding_params = {
+    # Build params; langchain_openai.OpenAIEmbeddings accepts api_key/base_url kwargs
+    embedding_params: Dict[str, Any] = {
         "model": model_name,
+        "api_key": api_key,
         **kwargs,
     }
+    if base_url:
+        embedding_params["base_url"] = base_url
 
     return OpenAIEmbeddings(**embedding_params)

@@ -133,6 +133,10 @@ class BeautifulSoupScraper:
             timeout = self.config.DEFAULT_TIMEOUT if self.config else 4
             response = self.session.get(self.link, timeout=timeout)
             response.raise_for_status()  # Check for HTTP errors
+            # Skip PDF or non-HTML resources if encountered
+            content_type = response.headers.get("Content-Type", "").lower()
+            if "application/pdf" in content_type:
+                return ""
             
             soup = BeautifulSoup(
                 response.content, "lxml", from_encoding=response.encoding
